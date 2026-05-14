@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'main.dart';
+
+import 'listacompras.dart';
 
 class TelaEditar extends StatefulWidget {
 
@@ -19,6 +20,7 @@ class _TelaEditarState
     extends State<TelaEditar> {
 
   late TextEditingController nome;
+
   late TextEditingController quantidade;
 
   @override
@@ -49,57 +51,72 @@ class _TelaEditarState
           ),
 
       appBar: AppBar(
+
         title: const Text('Editar'),
       ),
 
-      body: Padding(
+      body: Column(
+        children: [
 
-        padding: const EdgeInsets.all(10),
+          Card(
 
-        child: Column(
-          children: [
+            margin:
+                const EdgeInsets.all(10),
 
-            TextField(
-              controller: nome,
-              decoration:
-                  const InputDecoration(
-                labelText: 'Produto',
-              ),
-            ),
+            child: Padding(
 
-            TextField(
-              controller: quantidade,
-              decoration:
-                  const InputDecoration(
-                labelText: 'Quantidade',
-              ),
-            ),
+              padding:
+                  const EdgeInsets.all(10),
 
-            const SizedBox(height: 20),
+              child: Column(
+                children: [
 
-            ElevatedButton(
+                  TextField(
 
-              child: const Text('Salvar'),
+                    controller: nome,
 
-              onPressed: () {
-
-                Navigator.pop(
-
-                  context,
-
-                  Item(
-
-                    nome.text,
-                    quantidade.text,
-
-                    comprado:
-                        widget.item.comprado,
+                    decoration:
+                        const InputDecoration(
+                      labelText: 'Produto',
+                    ),
                   ),
-                );
-              },
+
+                  TextField(
+
+                    controller: quantidade,
+
+                    decoration:
+                        const InputDecoration(
+                      labelText: 'Quantidade',
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ],
-        ),
+          ),
+
+          ElevatedButton(
+
+            child: const Text('Salvar'),
+
+            onPressed: () {
+
+              Navigator.pop(
+
+                context,
+
+                Item(
+
+                  nome.text,
+                  quantidade.text,
+
+                  comprado:
+                      widget.item.comprado,
+                ),
+              );
+            },
+          ),
+        ],
       ),
     );
   }
