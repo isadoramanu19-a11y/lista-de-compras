@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'adicionar.dart';
+import 'main.dart';
 
 class TelaEditar extends StatefulWidget {
 
@@ -40,39 +40,66 @@ class _TelaEditarState
 
     return Scaffold(
 
+      backgroundColor:
+          const Color.fromARGB(
+            255,
+            211,
+            164,
+            223,
+          ),
+
       appBar: AppBar(
-        title: Text('Editar'),
+        title: const Text('Editar'),
       ),
 
-      body: Column(
-        children: [
+      body: Padding(
 
-          TextField(
-            controller: nome,
-          ),
+        padding: const EdgeInsets.all(10),
 
-          TextField(
-            controller: quantidade,
-          ),
+        child: Column(
+          children: [
 
-          ElevatedButton(
+            TextField(
+              controller: nome,
+              decoration:
+                  const InputDecoration(
+                labelText: 'Produto',
+              ),
+            ),
 
-            child: Text('Salvar'),
+            TextField(
+              controller: quantidade,
+              decoration:
+                  const InputDecoration(
+                labelText: 'Quantidade',
+              ),
+            ),
 
-            onPressed: () {
+            const SizedBox(height: 20),
 
-              Navigator.pop(
+            ElevatedButton(
 
-                context,
+              child: const Text('Salvar'),
 
-                Item(
-                  nome.text,
-                  quantidade.text,
-                ),
-              );
-            },
-          ),
-        ],
+              onPressed: () {
+
+                Navigator.pop(
+
+                  context,
+
+                  Item(
+
+                    nome.text,
+                    quantidade.text,
+
+                    comprado:
+                        widget.item.comprado,
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
