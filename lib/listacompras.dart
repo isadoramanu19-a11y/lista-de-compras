@@ -8,6 +8,7 @@ class Item {
 
   bool comprado;
 
+
   Item(
     this.nome,
     this.quantidade, {
