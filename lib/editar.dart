@@ -21,15 +21,15 @@ class TelaEditar extends StatefulWidget {
 class _TelaEditarState
     extends State<TelaEditar> {
 
+//inputs(entrada de dados)
   late TextEditingController nome;
-
   late TextEditingController quantidade;
 
   @override
   void initState() {
 
     super.initState();
-
+//inputs(dados atuais)
     nome = TextEditingController(
       text: widget.item.nome,
     );
@@ -41,7 +41,7 @@ class _TelaEditarState
 
   @override
   Widget build(BuildContext context) {
-
+//layout
     return Scaffold(
 
       backgroundColor:
@@ -51,12 +51,12 @@ class _TelaEditarState
             164,
             223,
           ),
-
+//layout(barra superior)
       appBar: AppBar(
 
         title: const Text('Editar'),
       ),
-
+//layout 
       body: Column(
         children: [
 
@@ -72,7 +72,7 @@ class _TelaEditarState
 
               child: Column(
                 children: [
-
+//inputs(editar)
                   TextField(
 
                     controller: nome,
@@ -96,13 +96,13 @@ class _TelaEditarState
               ),
             ),
           ),
-
+//input salvar
           ElevatedButton(
 
             child: const Text('Salvar'),
 
             onPressed: () {
-
+//navegação(volta editado)
               Navigator.pop(
 
                 context,

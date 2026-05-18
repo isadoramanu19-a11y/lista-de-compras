@@ -2,23 +2,23 @@ import 'package:flutter/material.dart';
 import 'listacompras.dart';
 
 
-
+//início e widget princip
 void main() {
   runApp(const MyApp());
 }
-
-class MyApp extends StatelessWidget {
+//widgets diversos
+  class MyApp extends StatelessWidget {
 
   const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
 
-    return const MaterialApp(
-
-      debugShowCheckedModeBanner: false,
-
-      home: ListaCompras(),
+//Layout
+        return const MaterialApp(
+        debugShowCheckedModeBanner: false,
+//navegação
+       home: ListaCompras(),
     );
   }
 }

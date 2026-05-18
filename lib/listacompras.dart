@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'editar.dart';
 
-class Item {
+//widget diverso(classe)
+  class Item {
 
   String nome;
   String quantidade;
@@ -15,8 +16,8 @@ class Item {
     this.comprado = false,
   });
 }
-
-class ListaCompras extends StatefulWidget {
+//widget diverso(state)
+  class ListaCompras extends StatefulWidget {
 
   const ListaCompras({super.key});
 
@@ -28,21 +29,24 @@ class ListaCompras extends StatefulWidget {
 class _ListaComprasState
     extends State<ListaCompras> {
 
+//lista de itens
   List<Item> itens = [];
 
+//inputs
   TextEditingController nome =
       TextEditingController();
 
   TextEditingController quantidade =
       TextEditingController();
 
+//input(verifica se algo foi digitado)
   void adicionar() {
 
     if (nome.text.isEmpty ||
         quantidade.text.isEmpty) {
       return;
     }
-
+//widget diverso(atualiza tela)
     setState(() {
 
       itens.add(
@@ -51,7 +55,7 @@ class _ListaComprasState
           quantidade.text,
         ),
       );
-
+//input(limpa os campos)
       nome.clear();
       quantidade.clear();
     });
@@ -67,7 +71,7 @@ class _ListaComprasState
 
   @override
   Widget build(BuildContext context) {
-
+//layout(estrutura da tela (build))
     return Scaffold(
 
       backgroundColor:
@@ -77,7 +81,7 @@ class _ListaComprasState
             164,
             223,
           ),
-
+//layouy(barra superior)
       appBar: AppBar(
 
         title:
@@ -85,10 +89,10 @@ class _ListaComprasState
 
         centerTitle: true,
       ),
-
+//layout(organiza na vertical)
       body: Column(
         children: [
-
+//card com input(organiza vizualmente)
           Card(
 
             margin:
@@ -101,7 +105,7 @@ class _ListaComprasState
 
               child: Column(
                 children: [
-
+//input(digitar nome do produto e quantidade)
                   TextField(
 
                     controller: nome,
@@ -125,7 +129,7 @@ class _ListaComprasState
               ),
             ),
           ),
-
+//input
           ElevatedButton(
 
             onPressed: adicionar,
@@ -133,7 +137,7 @@ class _ListaComprasState
             child:
                 const Text('Adicionar'),
           ),
-
+//layout para lista
           Expanded(
 
             child: ListView.builder(
@@ -143,7 +147,9 @@ class _ListaComprasState
               itemBuilder:
                   (context, index) {
 
-                return Card(
+                return
+//layout(estrutura do item)
+                 Card(
 
                   margin:
                       const EdgeInsets.symmetric(
@@ -152,7 +158,7 @@ class _ListaComprasState
                   ),
 
                   child: ListTile(
-
+//input(marcar/descamrcar)
                     leading: Checkbox(
 
                       value:
@@ -186,14 +192,13 @@ class _ListaComprasState
                                 : Colors.black,
                       ),
                     ),
-
+//navegação para a tela editar
                     onTap: () async {
-
                       final editado =
                           await Navigator.push(
 
                         context,
-
+//navegação quando abre a tela editar
                         MaterialPageRoute(
 
                           builder: (context) =>
@@ -212,7 +217,7 @@ class _ListaComprasState
                         });
                       }
                     },
-
+//input para excluir
                     trailing: IconButton(
 
                       icon: const Icon(
