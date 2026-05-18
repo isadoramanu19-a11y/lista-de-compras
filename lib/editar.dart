@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
-
 import 'listacompras.dart';
 
 class TelaEditar extends StatefulWidget {
 
   final Item item;
-
-
 
   const TelaEditar({
     super.key,

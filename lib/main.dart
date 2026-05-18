@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'listacompras.dart';
 
 
-//início e widget princip
+//início e widget principal
 void main() {
   runApp(const MyApp());
 }

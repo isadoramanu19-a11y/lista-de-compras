@@ -81,7 +81,8 @@ class _ListaComprasState
             164,
             223,
           ),
-//layouy(barra superior)
+
+//layout(barra superior)
       appBar: AppBar(
 
         title:
@@ -158,7 +159,7 @@ class _ListaComprasState
                   ),
 
                   child: ListTile(
-//input(marcar/descamrcar)
+//input(marcar/desmarcar)
                     leading: Checkbox(
 
                       value:
