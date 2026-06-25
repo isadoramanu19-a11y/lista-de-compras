@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'listacompras.dart';
+import 'calculadora.dart';
+import 'configuracao.dart';
 
 
 //início e widget principal

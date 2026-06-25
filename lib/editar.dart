@@ -21,6 +21,7 @@ class _TelaEditarState
 //inputs(entrada de dados)
   late TextEditingController nome;
   late TextEditingController quantidade;
+  late TextEditingController valor;
 
   @override
   void initState() {
@@ -34,6 +35,10 @@ class _TelaEditarState
     quantidade = TextEditingController(
       text: widget.item.quantidade,
     );
+
+   valor = TextEditingController(
+    text: widget.item.valor.toString(),
+  );
   }
 
   @override
@@ -89,6 +94,14 @@ class _TelaEditarState
                       labelText: 'Quantidade',
                     ),
                   ),
+                  TextField(
+                    
+                    controller: valor,
+                      keyboardType: TextInputType.number,
+                    decoration: const InputDecoration(
+                  labelText: 'Valor Unitário (R\$)',
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -108,6 +121,7 @@ class _TelaEditarState
 
                   nome.text,
                   quantidade.text,
+                  double.parse(valor.text),
 
                   comprado:
                       widget.item.comprado,

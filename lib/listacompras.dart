@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
 import 'editar.dart';
+import 'calculadora.dart';
+import 'configuracao.dart';
 
 //widget diverso(classe)
-  class Item {
+class Item {
 
   String nome;
   String quantidade;
-
+  double valor;
   bool comprado;
-
 
   Item(
     this.nome,
-    this.quantidade, {
+    this.quantidade,
+    this.valor, {
     this.comprado = false,
   });
 }
@@ -39,27 +41,33 @@ class _ListaComprasState
   TextEditingController quantidade =
       TextEditingController();
 
-//input(verifica se algo foi digitado)
-  void adicionar() {
+  TextEditingController valor = 
+      TextEditingController();
 
-    if (nome.text.isEmpty ||
-        quantidade.text.isEmpty) {
-      return;
-    }
-//widget diverso(atualiza tela)
-    setState(() {
 
-      itens.add(
-        Item(
-          nome.text,
-          quantidade.text,
-        ),
-      );
-//input(limpa os campos)
-      nome.clear();
-      quantidade.clear();
-    });
+void adicionar() {
+
+  if (nome.text.isEmpty ||
+      quantidade.text.isEmpty ||
+      valor.text.isEmpty) {
+    return;
   }
+
+  setState(() {
+
+    itens.add(
+      Item(
+        nome.text,
+        quantidade.text,
+        double.tryParse(valor.text) ?? 0,
+      ),
+    );
+
+    nome.clear();
+    quantidade.clear();
+    valor.clear();
+  });
+}
 
   void excluir(int index) {
 
@@ -126,18 +134,62 @@ class _ListaComprasState
                       labelText: 'Quantidade',
                     ),
                   ),
+                  TextField(
+
+                controller: valor,
+                      keyboardType: TextInputType.number,
+                    decoration: const InputDecoration(
+                  labelText: 'Valor Unitário (R\$)',
+                    ),
+                  ),
                 ],
               ),
             ),
           ),
 //input
-          ElevatedButton(
+       const SizedBox(height: 10),
 
-            onPressed: adicionar,
+Row(
+  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+  children: [
 
-            child:
-                const Text('Adicionar'),
+    ElevatedButton.icon(
+      onPressed: adicionar,
+      icon: const Icon(Icons.add),
+      label: const Text("Adicionar"),
+    ),
+
+    ElevatedButton.icon(
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => Calculadora(
+            itens: itens,
+            ),
           ),
+        );
+      },
+      icon: const Icon(Icons.calculate),
+      label: const Text("Calculadora"),
+    ),
+
+    ElevatedButton.icon(
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const TelaConfiguracoes(),
+          ),
+        );
+      },
+      icon: const Icon(Icons.settings),
+      label: const Text("Config."),
+    ),
+  ],
+),
+
+const SizedBox(height: 10),
 //layout para lista
           Expanded(
 
