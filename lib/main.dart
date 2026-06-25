@@ -3,6 +3,7 @@ import 'listacompras.dart';
 
 
 //início e widget principal
+
 void main() {
   runApp(const MyApp());
 }

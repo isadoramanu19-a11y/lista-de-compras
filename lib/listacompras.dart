@@ -71,7 +71,7 @@ class _ListaComprasState
 
   @override
   Widget build(BuildContext context) {
-//layout(estrutura da tela (build))
+//layout(estrutura da tela)
     return Scaffold(
 
       backgroundColor:
