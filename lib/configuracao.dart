@@ -4,13 +4,11 @@ class TelaConfiguracoes extends StatefulWidget {
   const TelaConfiguracoes({super.key});
 
   @override
-  State<TelaConfiguracoes> createState() =>
-      _TelaConfiguracoesState();
+  State<TelaConfiguracoes> createState() => _TelaConfiguracoesState();
 }
 
-class _TelaConfiguracoesState
-    extends State<TelaConfiguracoes> {
-
+//Stateful, os valores da configuração e animação podem mudar com alterações
+class _TelaConfiguracoesState extends State<TelaConfiguracoes> {
   bool confirmarExclusao = true;
   bool cadeado = true;
   bool salvo = false;
@@ -18,39 +16,27 @@ class _TelaConfiguracoesState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(
-        255,
-        211,
-        164,
-        223,
-      ),
+      backgroundColor: const Color.fromARGB(255, 211, 164, 223),
 
-      appBar: AppBar(
-        title: const Text("Configurações"),
-      ),
+      appBar: AppBar(title: const Text("Configurações")),
 
       body: ListView(
         padding: const EdgeInsets.all(15),
         children: [
 
-          // AnimatedContainer
+//Animação, altera cor e altura quando selecionada, quando exluir é ativado ou desativado
 
           AnimatedContainer(
-            duration: const Duration(
-              seconds: 1,
-            ),
+            duration: const Duration(seconds: 1),
 
-            height: confirmarExclusao
-                ? 90
-                : 60,
+            height: confirmarExclusao ? 90 : 60,
 
             decoration: BoxDecoration(
               color: confirmarExclusao
                   ? Colors.green.shade200
                   : Colors.red.shade200,
 
-              borderRadius:
-                  BorderRadius.circular(15),
+              borderRadius: BorderRadius.circular(15),
             ),
 
             child: Center(
@@ -61,8 +47,7 @@ class _TelaConfiguracoesState
 
                 style: const TextStyle(
                   fontSize: 18,
-                  fontWeight:
-                      FontWeight.bold,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
             ),
@@ -70,119 +55,50 @@ class _TelaConfiguracoesState
 
           const SizedBox(height: 20),
 
-          // AnimatedDefaultTextStyle
-
+// Animação, muda tamanho e cor do texto
           Center(
             child: AnimatedDefaultTextStyle(
-              duration:
-                  const Duration(seconds: 1),
+              duration: const Duration(seconds: 1),
 
               style: TextStyle(
-                fontSize:
-                    confirmarExclusao
-                        ? 26
-                        : 18,
+                fontSize: confirmarExclusao ? 26 : 18,
 
-                color:
-                    confirmarExclusao
-                        ? Colors.green
-                        : Colors.red,
+                color: confirmarExclusao ? Colors.green : Colors.red,
               ),
 
-              child: Text(
-                confirmarExclusao
-                    ? "Ativado"
-                    : "Desativado",
-              ),
+              child: Text(confirmarExclusao ? "Ativado" : "Desativado"),
             ),
           ),
 
           const SizedBox(height: 20),
 
-          // Switch
-
+//Processamento, altera estado de aplicação, atualiza variáveis e reconstrói interface com o SetState
           SwitchListTile(
-            title: const Text(
-              "Confirmar exclusão",
-            ),
+            title: const Text("Confirmar exclusão"),
 
             value: confirmarExclusao,
 
             onChanged: (value) {
-
               setState(() {
-
-                confirmarExclusao =
-                    value;
+                confirmarExclusao = value;
 
                 cadeado = value;
-
               });
-
             },
           ),
 
           const Divider(),
 
-          // AnimatedCrossFade
-
-          Center(
-            child: GestureDetector(
-
-              onTap: () {
-
-                setState(() {
-
-                  cadeado = !cadeado;
-
-                });
-
-              },
-
-              child:
-                  AnimatedCrossFade(
-
-                duration:
-                    const Duration(
-                        seconds: 1),
-
-                firstChild:
-                    const Icon(
-                  Icons.lock,
-                  size: 70,
-                ),
-
-                secondChild:
-                    const Icon(
-                  Icons.lock_open,
-                  size: 70,
-                ),
-
-                crossFadeState:
-                    cadeado
-                        ? CrossFadeState
-                            .showFirst
-                        : CrossFadeState
-                            .showSecond,
-              ),
-            ),
-          ),
-
-          const SizedBox(height: 30),
-
           const Center(
             child: Text(
               "Arraste a engrenagem",
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight:
-                    FontWeight.bold,
-              ),
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
           ),
 
           const SizedBox(height: 20),
-                    // Draggable
+   
+//Animação, widget draggable arrasta a engrenagem até área destinada
 
           Center(
             child: Draggable<String>(
@@ -232,50 +148,37 @@ class _TelaConfiguracoesState
 
           const SizedBox(height: 30),
 
-          // DragTarget
-
+//Animação e processamento, dragTarget recebe o objeto arrastado e altera variável "salvo"
+//Animedcontainer muda a cor e mensagem quando a configuração é salva
           Center(
             child: DragTarget<String>(
-
               onAcceptWithDetails: (details) {
                 setState(() {
                   salvo = true;
                 });
               },
 
-              builder: (
-                context,
-                candidateData,
-                rejectedData,
-              ) {
+              builder: (context, candidateData, rejectedData) {
                 return AnimatedContainer(
-                  duration: const Duration(
-                    milliseconds: 500,
-                  ),
+                  duration: const Duration(milliseconds: 500),
 
                   width: 180,
                   height: 90,
 
                   decoration: BoxDecoration(
-                    color: salvo
-                        ? Colors.green
-                        : Colors.blue,
-                    borderRadius:
-                        BorderRadius.circular(10),
+                    color: salvo ? Colors.green : Colors.blue,
+                    borderRadius: BorderRadius.circular(10),
                   ),
 
                   child: Center(
                     child: Text(
-                      salvo
-                          ? "✔ Configuração salva!"
-                          : "Solte aqui",
+                      salvo ? "Configuração salva!" : "Solte aqui",
 
                       textAlign: TextAlign.center,
 
                       style: const TextStyle(
                         color: Colors.white,
-                        fontWeight:
-                            FontWeight.bold,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
@@ -283,7 +186,6 @@ class _TelaConfiguracoesState
               },
             ),
           ),
-
         ],
       ),
     );

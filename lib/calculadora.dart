@@ -1,42 +1,35 @@
 import 'package:flutter/material.dart';
 import 'listacompras.dart';
 
+//Stateful, onde a tela pode mudar conforme os dados 
 class Calculadora extends StatefulWidget {
-
   final List<Item> itens;
 
-  const Calculadora({
-    super.key,
-    required this.itens,
-  });
+  const Calculadora({super.key, required this.itens});
 
   @override
-  State<Calculadora> createState() =>
-      _CalculadoraState();
+  State<Calculadora> createState() => _CalculadoraState();
 }
 
+//Processamento, cálculo do valor total da compra, somando com o subtotal de cada item
 class _CalculadoraState extends State<Calculadora> {
   double calcularTotalLista() {
+    double total = 0;
+    for (var item in widget.itens) {
+      int qtd = int.tryParse(item.quantidade) ?? 0;
 
-  double total = 0;
+      total += item.valor * qtd;
+    }
 
-  for (var item in widget.itens) {
-
-    int qtd =
-        int.tryParse(item.quantidade) ?? 0;
-
-    total += item.valor * qtd;
+    return total;
   }
 
-  return total;
-}
   final TextEditingController valor = TextEditingController();
   final TextEditingController quantidade = TextEditingController();
 
   double total = 0;
 
   void calcular() {
-
     double v = double.tryParse(valor.text) ?? 0;
     int q = int.tryParse(quantidade.text) ?? 0;
 
@@ -46,102 +39,73 @@ class _CalculadoraState extends State<Calculadora> {
   }
 
   @override
- Widget build(BuildContext context) {
-//layout(estrutura da tela)
+  Widget build(BuildContext context) {
+    //layout, estrutura da tela
     return Scaffold(
+      backgroundColor: const Color.fromARGB(255, 211, 164, 223),
 
-      backgroundColor:
-          const Color.fromARGB(
-            255,
-            211,
-            164,
-            223,
-          ),
-
-//layout(barra superior)
+      //layout, barra superior
       appBar: AppBar(
-
-        title:
-            const Text('Calculadora de compras'),
+        title: const Text('Calculadora de compras'),
 
         centerTitle: true,
       ),
       body: Padding(
-  padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
 
-  child: Column(
+        child: Column(
+          children: [
+            Expanded(
+              child: ListView.builder(
+                itemCount: widget.itens.length,
 
-    children: [
+                itemBuilder: (context, index) {
+                  final item = widget.itens[index];
 
-      Expanded(
-        child: ListView.builder(
+                  int qtd = int.tryParse(item.quantidade) ?? 0;
+                  
+//Processamento, cálculo do subtotal de cada item, multiplicando o produto pela quantidade
 
-          itemCount: widget.itens.length,
+                  double subtotal = item.valor * qtd;
+                  return Card(
+                    child: ListTile(
+                      title: Text(item.nome),
+                      subtitle: Text(
+                        "$qtd x R\$ ${item.valor.toStringAsFixed(2)}",
+                      ),
+                      trailing: Text("R\$ ${subtotal.toStringAsFixed(2)}"),
+                    ),
+                  );
+                },
+              ),
+            ),
 
-          itemBuilder: (context, index) {
+            Card(
+              elevation: 8,
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  children: [
+                    const Text(
+                      "TOTAL DA LISTA",
+                      style: TextStyle(fontSize: 18),
+                    ),
 
-            final item = widget.itens[index];
-
-            int qtd =
-                int.tryParse(item.quantidade) ?? 0;
-
-            double subtotal =
-                item.valor * qtd;
-
-            return Card(
-
-              child: ListTile(
-
-                title: Text(item.nome),
-
-                subtitle: Text(
-                  "$qtd x R\$ ${item.valor.toStringAsFixed(2)}",
-                ),
-
-                trailing: Text(
-                  "R\$ ${subtotal.toStringAsFixed(2)}",
+                    const SizedBox(height: 10),
+                    Text(
+                      "R\$ ${calcularTotalLista().toStringAsFixed(2)}",
+                      style: const TextStyle(
+                        fontSize: 30,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            );
-          },
+            ),
+          ],
         ),
       ),
-
-      Card(
-
-        elevation: 8,
-
-        child: Padding(
-
-          padding: const EdgeInsets.all(20),
-
-          child: Column(
-
-            children: [
-
-              const Text(
-                "TOTAL DA LISTA",
-                style: TextStyle(
-                  fontSize: 18,
-                ),
-              ),
-
-              const SizedBox(height: 10),
-
-              Text(
-                "R\$ ${calcularTotalLista().toStringAsFixed(2)}",
-                style: const TextStyle(
-                  fontSize: 30,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    ],
-  ),
-),
     );
   }
 }
