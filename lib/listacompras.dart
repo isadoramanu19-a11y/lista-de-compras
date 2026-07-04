@@ -5,74 +5,51 @@ import 'configuracao.dart';
 
 //widget diverso(classe)
 class Item {
-
   String nome;
   String quantidade;
   double valor;
   bool comprado;
 
-  Item(
-    this.nome,
-    this.quantidade,
-    this.valor, {
-    this.comprado = false,
-  });
+  Item(this.nome, this.quantidade, this.valor, {this.comprado = false});
 }
-//widget diverso(state)
-  class ListaCompras extends StatefulWidget {
 
+//widget diverso(state)
+class ListaCompras extends StatefulWidget {
   const ListaCompras({super.key});
 
   @override
-  State<ListaCompras> createState() =>
-      _ListaComprasState();
+  State<ListaCompras> createState() => _ListaComprasState();
 }
 
-class _ListaComprasState
-    extends State<ListaCompras> {
-
+class _ListaComprasState extends State<ListaCompras> {
 //lista de itens
   List<Item> itens = [];
 
 //inputs
-  TextEditingController nome =
-      TextEditingController();
+  TextEditingController nome = TextEditingController();
 
-  TextEditingController quantidade =
-      TextEditingController();
+  TextEditingController quantidade = TextEditingController();
 
-  TextEditingController valor = 
-      TextEditingController();
+  TextEditingController valor = TextEditingController();
 
-
-void adicionar() {
-
-  if (nome.text.isEmpty ||
-      quantidade.text.isEmpty ||
-      valor.text.isEmpty) {
-    return;
-  }
-
-  setState(() {
-
-    itens.add(
-      Item(
-        nome.text,
-        quantidade.text,
-        double.tryParse(valor.text) ?? 0,
-      ),
-    );
-
-    nome.clear();
-    quantidade.clear();
-    valor.clear();
-  });
-}
-
-  void excluir(int index) {
+  void adicionar() {
+    if (nome.text.isEmpty || quantidade.text.isEmpty || valor.text.isEmpty) {
+      return;
+    }
 
     setState(() {
+      itens.add(
+        Item(nome.text, quantidade.text, double.tryParse(valor.text) ?? 0),
+      );
 
+      nome.clear();
+      quantidade.clear();
+      valor.clear();
+    });
+  }
+
+  void excluir(int index) {
+    setState(() {
       itens.removeAt(index);
     });
   }
@@ -81,131 +58,96 @@ void adicionar() {
   Widget build(BuildContext context) {
 //layout(estrutura da tela)
     return Scaffold(
-
-      backgroundColor:
-          const Color.fromARGB(
-            255,
-            211,
-            164,
-            223,
-          ),
+      backgroundColor: const Color.fromARGB(255, 211, 164, 223),
 
 //layout(barra superior)
-      appBar: AppBar(
-
-        title:
-            const Text('Lista de Compras'),
-
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: const Text('Lista de Compras'), centerTitle: true),
 //layout(organiza na vertical)
       body: Column(
         children: [
 //card com input(organiza vizualmente)
           Card(
-
-            margin:
-                const EdgeInsets.all(10),
+            margin: const EdgeInsets.all(10),
 
             child: Padding(
-
-              padding:
-                  const EdgeInsets.all(10),
+              padding: const EdgeInsets.all(10),
 
               child: Column(
                 children: [
 //input(digitar nome do produto e quantidade)
                   TextField(
-
                     controller: nome,
 
-                    decoration:
-                        const InputDecoration(
-                      labelText: 'Produto',
-                    ),
+                    decoration: const InputDecoration(labelText: 'Produto'),
                   ),
 
                   TextField(
-
                     controller: quantidade,
 
-                    decoration:
-                        const InputDecoration(
-                      labelText: 'Quantidade',
-                    ),
+                    decoration: const InputDecoration(labelText: 'Quantidade'),
                   ),
                   TextField(
-
-                controller: valor,
-                      keyboardType: TextInputType.number,
+                    controller: valor,
+                    keyboardType: TextInputType.number,
                     decoration: const InputDecoration(
-                  labelText: 'Valor Unitário (R\$)',
+                      labelText: 'Valor Unitário (R\$)',
                     ),
                   ),
                 ],
               ),
             ),
           ),
-//input
-       const SizedBox(height: 10),
+          //input
+          const SizedBox(height: 10),
 
-Row(
-  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-  children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              ElevatedButton.icon(
+                onPressed: adicionar,
+                icon: const Icon(Icons.add),
+                label: const Text("Adicionar"),
+              ),
 
-    ElevatedButton.icon(
-      onPressed: adicionar,
-      icon: const Icon(Icons.add),
-      label: const Text("Adicionar"),
-    ),
+              ElevatedButton.icon(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => Calculadora(itens: itens),
+                    ),
+                  );
+                },
+                icon: const Icon(Icons.calculate),
+                label: const Text("Calculadora"),
+              ),
 
-    ElevatedButton.icon(
-      onPressed: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => Calculadora(
-            itens: itens,
-            ),
+              ElevatedButton.icon(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const TelaConfiguracoes(),
+                    ),
+                  );
+                },
+                icon: const Icon(Icons.settings),
+                label: const Text("Config."),
+              ),
+            ],
           ),
-        );
-      },
-      icon: const Icon(Icons.calculate),
-      label: const Text("Calculadora"),
-    ),
 
-    ElevatedButton.icon(
-      onPressed: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const TelaConfiguracoes(),
-          ),
-        );
-      },
-      icon: const Icon(Icons.settings),
-      label: const Text("Config."),
-    ),
-  ],
-),
-
-const SizedBox(height: 10),
+          const SizedBox(height: 10),
 //layout para lista
           Expanded(
-
             child: ListView.builder(
-
               itemCount: itens.length,
 
-              itemBuilder:
-                  (context, index) {
-
+              itemBuilder: (context, index) {
                 return
 //layout(estrutura do item)
-                 Card(
-
-                  margin:
-                      const EdgeInsets.symmetric(
+                Card(
+                  margin: const EdgeInsets.symmetric(
                     horizontal: 10,
                     vertical: 5,
                   ),
@@ -213,73 +155,49 @@ const SizedBox(height: 10),
                   child: ListTile(
 //input(marcar/desmarcar)
                     leading: Checkbox(
-
-                      value:
-                          itens[index].comprado,
+                      value: itens[index].comprado,
 
                       onChanged: (value) {
-
                         setState(() {
-
-                          itens[index].comprado =
-                              value!;
+                          itens[index].comprado = value!;
                         });
                       },
                     ),
 
                     title: Text(
-
                       '${itens[index].nome} - ${itens[index].quantidade}',
 
                       style: TextStyle(
+                        decoration: itens[index].comprado
+                            ? TextDecoration.lineThrough
+                            : TextDecoration.none,
 
-                        decoration:
-                            itens[index].comprado
-                                ? TextDecoration
-                                    .lineThrough
-                                : TextDecoration.none,
-
-                        color:
-                            itens[index].comprado
-                                ? Colors.grey
-                                : Colors.black,
+                        color: itens[index].comprado
+                            ? Colors.grey
+                            : Colors.black,
                       ),
                     ),
 //navegação para a tela editar
                     onTap: () async {
-                      final editado =
-                          await Navigator.push(
-
+                      final editado = await Navigator.push(
                         context,
 //navegação quando abre a tela editar
                         MaterialPageRoute(
-
-                          builder: (context) =>
-                              TelaEditar(
-                            item: itens[index],
-                          ),
+                          builder: (context) => TelaEditar(item: itens[index]),
                         ),
                       );
 
                       if (editado != null) {
-
                         setState(() {
-
-                          itens[index] =
-                              editado;
+                          itens[index] = editado;
                         });
                       }
                     },
 //input para excluir
                     trailing: IconButton(
-
-                      icon: const Icon(
-                        Icons.delete,
-                        color: Colors.red,
-                      ),
+                      icon: const Icon(Icons.delete, color: Colors.red),
 
                       onPressed: () {
-
                         excluir(index);
                       },
                     ),
