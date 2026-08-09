@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'listacompras.dart';
+import 'splash_screen.dart';
 
 //início e widget principal
+
 void main() {
   runApp(const MyApp());
 }
@@ -17,7 +18,7 @@ void main() {
         return const MaterialApp(
         debugShowCheckedModeBanner: false,
 //navegação
-       home: ListaCompras(),
+       home: SplashScreen(),
     );
   }
 }

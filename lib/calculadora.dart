@@ -40,11 +40,13 @@ class _CalculadoraState extends State<Calculadora> {
 
   @override
   Widget build(BuildContext context) {
+
 //layout, estrutura da tela
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 211, 164, 223),
 
 //layout, barra superior
+
       appBar: AppBar(
         title: const Text('Calculadora de compras'),
 
