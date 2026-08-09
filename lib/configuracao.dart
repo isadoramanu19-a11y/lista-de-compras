@@ -149,7 +149,7 @@ class _TelaConfiguracoesState extends State<TelaConfiguracoes> {
           const SizedBox(height: 30),
 
 //Animação e processamento, dragTarget recebe o objeto arrastado e altera variável "salvo"
-//Animedcontainer muda a cor e mensagem quando a configuração é salva
+//Animatedcontainer muda a cor e mensagem quando a configuração é salva
           Center(
             child: DragTarget<String>(
               onAcceptWithDetails: (details) {
