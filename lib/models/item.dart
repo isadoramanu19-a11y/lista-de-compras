@@ -1,7 +1,7 @@
 class Item {
   int? id;
   String nome;
-  String quantidade;
+  int quantidade;
   double valor;
   bool comprado;
 
@@ -13,6 +13,7 @@ class Item {
     this.comprado = false,
   });
 
+  // Transforma o objeto em um Map para salvar no SQLite
   Map<String, dynamic> toMap() {
     return {
       'id': id,
@@ -23,12 +24,13 @@ class Item {
     };
   }
 
+  // Transforma os dados do SQLite novamente em um objeto Item
   factory Item.fromMap(Map<String, dynamic> map) {
     return Item(
       id: map['id'],
       nome: map['nome'],
       quantidade: map['quantidade'],
-      valor: map['valor'],
+      valor: map['valor'].toDouble(),
       comprado: map['comprado'] == 1,
     );
   }

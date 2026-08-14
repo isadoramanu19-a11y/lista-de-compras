@@ -1,19 +1,11 @@
 import 'package:flutter/material.dart';
+
+import 'models/item.dart';
+import 'database/database_helper.dart';
 import 'editar.dart';
 import 'calculadora.dart';
 import 'configuracao.dart';
 
-//widget diverso(classe)
-class Item {
-  String nome;
-  String quantidade;
-  double valor;
-  bool comprado;
-
-  Item(this.nome, this.quantidade, this.valor, {this.comprado = false});
-}
-
-//widget diverso(state)
 class ListaCompras extends StatefulWidget {
   const ListaCompras({super.key});
 
@@ -22,50 +14,105 @@ class ListaCompras extends StatefulWidget {
 }
 
 class _ListaComprasState extends State<ListaCompras> {
-//lista de itens
+  // Lista de itens
   List<Item> itens = [];
 
-//inputs
-  TextEditingController nome = TextEditingController();
+  // Inputs
+  final TextEditingController nome = TextEditingController();
+  final TextEditingController quantidade = TextEditingController();
+  final TextEditingController valor = TextEditingController();
 
-  TextEditingController quantidade = TextEditingController();
+  @override
+  void initState() {
+    super.initState();
 
-  TextEditingController valor = TextEditingController();
+    // Carrega os itens salvos no banco
+    carregarItens();
+  }
 
-  void adicionar() {
-    if (nome.text.isEmpty || quantidade.text.isEmpty || valor.text.isEmpty) {
-      return;
-    }
+  // READ - carregar itens do banco
+  Future<void> carregarItens() async {
+    final itensSalvos = await DatabaseHelper.instance.buscarItens();
 
     setState(() {
-      itens.add(
-        Item(nome.text, quantidade.text, double.tryParse(valor.text) ?? 0),
-      );
-
-      nome.clear();
-      quantidade.clear();
-      valor.clear();
+      itens = itensSalvos;
     });
   }
 
-  void excluir(int index) {
+  // CREATE - adicionar item
+  Future<void> adicionar() async {
+    if (nome.text.isEmpty ||
+        quantidade.text.isEmpty ||
+        valor.text.isEmpty) {
+      return;
+    }
+
+    final novoItem = Item(
+      nome: nome.text,
+      quantidade: int.tryParse(quantidade.text) ?? 0,
+      valor: double.tryParse(valor.text) ?? 0,
+    );
+
+    // Salva no banco
+    final id = await DatabaseHelper.instance.adicionarItem(novoItem);
+
+    // Coloca o ID gerado pelo banco no item
+    novoItem.id = id;
+
+    setState(() {
+      itens.insert(0, novoItem);
+    });
+
+    // Limpa os campos
+    nome.clear();
+    quantidade.clear();
+    valor.clear();
+  }
+
+  // DELETE - excluir item
+  Future<void> excluir(int index) async {
+    final item = itens[index];
+
+    if (item.id != null) {
+      await DatabaseHelper.instance.excluirItem(item.id!);
+    }
+
     setState(() {
       itens.removeAt(index);
     });
   }
 
+  // UPDATE - atualizar item
+  Future<void> atualizarItem(Item item, int index) async {
+    await DatabaseHelper.instance.atualizarItem(item);
+
+    setState(() {
+      itens[index] = item;
+    });
+  }
+
+  @override
+  void dispose() {
+    nome.dispose();
+    quantidade.dispose();
+    valor.dispose();
+
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-//layout(estrutura da tela)
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 211, 164, 223),
 
-//layout(barra superior)
-      appBar: AppBar(title: const Text('Lista de Compras'), centerTitle: true),
-//layout(organiza na vertical)
+      appBar: AppBar(
+        title: const Text('Lista de Compras'),
+        centerTitle: true,
+      ),
+
       body: Column(
         children: [
-//card com input(organiza vizualmente)
+          // Card com os inputs
           Card(
             margin: const EdgeInsets.all(10),
 
@@ -74,18 +121,21 @@ class _ListaComprasState extends State<ListaCompras> {
 
               child: Column(
                 children: [
-//input(digitar nome do produto e quantidade)
                   TextField(
                     controller: nome,
-
-                    decoration: const InputDecoration(labelText: 'Produto'),
+                    decoration: const InputDecoration(
+                      labelText: 'Produto',
+                    ),
                   ),
 
                   TextField(
                     controller: quantidade,
-
-                    decoration: const InputDecoration(labelText: 'Quantidade'),
+                    keyboardType: TextInputType.number,
+                    decoration: const InputDecoration(
+                      labelText: 'Quantidade',
+                    ),
                   ),
+
                   TextField(
                     controller: valor,
                     keyboardType: TextInputType.number,
@@ -97,11 +147,12 @@ class _ListaComprasState extends State<ListaCompras> {
               ),
             ),
           ),
-          //input
+
           const SizedBox(height: 10),
 
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+
             children: [
               ElevatedButton.icon(
                 onPressed: adicionar,
@@ -138,64 +189,71 @@ class _ListaComprasState extends State<ListaCompras> {
           ),
 
           const SizedBox(height: 10),
-//layout para lista
+
+          // Lista
           Expanded(
             child: ListView.builder(
               itemCount: itens.length,
 
               itemBuilder: (context, index) {
-                return
-//layout(estrutura do item)
-                Card(
+                final item = itens[index];
+
+                return Card(
                   margin: const EdgeInsets.symmetric(
                     horizontal: 10,
                     vertical: 5,
                   ),
 
                   child: ListTile(
-//input(marcar/desmarcar)
+                    // Checkbox
                     leading: Checkbox(
-                      value: itens[index].comprado,
+                      value: item.comprado,
 
-                      onChanged: (value) {
-                        setState(() {
-                          itens[index].comprado = value!;
-                        });
+                      onChanged: (value) async {
+                        item.comprado = value ?? false;
+
+                        await atualizarItem(item, index);
                       },
                     ),
 
+                    // Nome e quantidade
                     title: Text(
-                      '${itens[index].nome} - ${itens[index].quantidade}',
+                      '${item.nome} - ${item.quantidade}',
 
                       style: TextStyle(
-                        decoration: itens[index].comprado
+                        decoration: item.comprado
                             ? TextDecoration.lineThrough
                             : TextDecoration.none,
 
-                        color: itens[index].comprado
+                        color: item.comprado
                             ? Colors.grey
                             : Colors.black,
                       ),
                     ),
-//navegação para a tela editar
+
+                    // Abrir tela de edição
                     onTap: () async {
                       final editado = await Navigator.push(
                         context,
-//navegação quando abre a tela editar
+
                         MaterialPageRoute(
-                          builder: (context) => TelaEditar(item: itens[index]),
+                          builder: (context) => TelaEditar(
+                            item: item,
+                          ),
                         ),
                       );
 
-                      if (editado != null) {
-                        setState(() {
-                          itens[index] = editado;
-                        });
+                      if (editado != null && editado is Item) {
+                        await atualizarItem(editado, index);
                       }
                     },
-//input para excluir
+
+                    // Excluir
                     trailing: IconButton(
-                      icon: const Icon(Icons.delete, color: Colors.red),
+                      icon: const Icon(
+                        Icons.delete,
+                        color: Colors.red,
+                      ),
 
                       onPressed: () {
                         excluir(index);

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class TelaConfiguracoes extends StatefulWidget {
   const TelaConfiguracoes({super.key});
@@ -12,20 +13,57 @@ class _TelaConfiguracoesState extends State<TelaConfiguracoes> {
   bool confirmarExclusao = true;
   bool cadeado = true;
   bool salvo = false;
+  bool temaEscuro = false;
+
+  Future<void> carregarTema() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      temaEscuro = prefs.getBool('temaEscuro') ?? false;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    carregarTema();
+  }
+
+  Future<void> alterarTema(bool valor) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('temaEscuro', valor);
+    setState(() {
+      temaEscuro = valor;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 211, 164, 223),
+   return Scaffold(
+  backgroundColor: temaEscuro
+      ? const Color.fromARGB(255, 34, 33, 33)
+      : const Color.fromARGB(255, 211, 164, 223),
 
-      appBar: AppBar(title: const Text("Configurações")),
+  appBar: AppBar(
+    title: const Text("Configurações"),
+  ),
+
 
       body: ListView(
         padding: const EdgeInsets.all(15),
         children: [
+          // MODO ESCURO
+          SwitchListTile(
+            title: const Text(
+              "Modo escuro",
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            subtitle: const Text(""),
+            value: temaEscuro,
+            onChanged: alterarTema,
+          ),
+          const Divider(),
 
-//Animação, altera cor e altura quando selecionada, quando exluir é ativado ou desativado
-
+          //Animação, altera cor e altura quando selecionada, quando exluir é ativado ou desativado
           AnimatedContainer(
             duration: const Duration(seconds: 1),
 
@@ -38,6 +76,9 @@ class _TelaConfiguracoesState extends State<TelaConfiguracoes> {
 
               borderRadius: BorderRadius.circular(15),
             ),
+
+
+
 
             child: Center(
               child: Text(
@@ -55,7 +96,7 @@ class _TelaConfiguracoesState extends State<TelaConfiguracoes> {
 
           const SizedBox(height: 20),
 
-// Animação, muda tamanho e cor do texto
+          // Animação, muda tamanho e cor do texto
           Center(
             child: AnimatedDefaultTextStyle(
               duration: const Duration(seconds: 1),
@@ -66,15 +107,14 @@ class _TelaConfiguracoesState extends State<TelaConfiguracoes> {
                 color: confirmarExclusao ? Colors.green : Colors.red,
               ),
 
-              child: Text(confirmarExclusao ? "Ativado" : "Desativado"),
+              child: Text(confirmarExclusao ? "ativado" : "desativado"),
             ),
           ),
 
           const SizedBox(height: 20),
 
-//Processamento, altera estado de aplicação, atualiza variáveis e reconstrói interface com o SetState
+          //Processamento, altera estado de aplicação, atualiza variáveis e reconstrói interface com o SetState
           SwitchListTile(
-            title: const Text("Confirmar exclusão"),
 
             value: confirmarExclusao,
 
@@ -97,9 +137,8 @@ class _TelaConfiguracoesState extends State<TelaConfiguracoes> {
           ),
 
           const SizedBox(height: 20),
-   
-//Animação, widget draggable arrasta a engrenagem até área destinada
 
+          //Animação, widget draggable arrasta a engrenagem até área destinada
           Center(
             child: Draggable<String>(
               data: "config",
@@ -148,9 +187,9 @@ class _TelaConfiguracoesState extends State<TelaConfiguracoes> {
 
           const SizedBox(height: 30),
 
-//Animação e processamento, dragTarget recebe o objeto arrastado e altera variável "salvo"
+          //Animação e processamento, dragTarget recebe o objeto arrastado e altera variável "salvo"
 
-//Animatedcontainer muda a cor e mensagem quando a configuração é salva
+          //Animatedcontainer muda a cor e mensagem quando a configuração é salva
           Center(
             child: DragTarget<String>(
               onAcceptWithDetails: (details) {

@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
-import 'listacompras.dart';
+import 'models/item.dart';
 
 class TelaEditar extends StatefulWidget {
   final Item item;
 
-  const TelaEditar({super.key, required this.item});
+  const TelaEditar({
+    super.key,
+    required this.item,
+  });
 
   @override
   State<TelaEditar> createState() => _TelaEditarState();
 }
 
 class _TelaEditarState extends State<TelaEditar> {
-  //inputs(entrada de dados)
   late TextEditingController nome;
   late TextEditingController quantidade;
   late TextEditingController valor;
@@ -19,22 +21,37 @@ class _TelaEditarState extends State<TelaEditar> {
   @override
   void initState() {
     super.initState();
-//inputs(dados atuais)
-    nome = TextEditingController(text: widget.item.nome);
 
-    quantidade = TextEditingController(text: widget.item.quantidade);
+    nome = TextEditingController(
+      text: widget.item.nome,
+    );
 
-    valor = TextEditingController(text: widget.item.valor.toString());
+    quantidade = TextEditingController(
+      text: widget.item.quantidade.toString(),
+    );
+
+    valor = TextEditingController(
+      text: widget.item.valor.toString(),
+    );
+  }
+
+  @override
+  void dispose() {
+    nome.dispose();
+    quantidade.dispose();
+    valor.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-//layout
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 211, 164, 223),
-//layout(barra superior)
-      appBar: AppBar(title: const Text('Editar')),
-//layout
+
+      appBar: AppBar(
+        title: const Text('Editar'),
+      ),
+
       body: Column(
         children: [
           Card(
@@ -45,18 +62,21 @@ class _TelaEditarState extends State<TelaEditar> {
 
               child: Column(
                 children: [
-//inputs(editar)
                   TextField(
                     controller: nome,
-
-                    decoration: const InputDecoration(labelText: 'Produto'),
+                    decoration: const InputDecoration(
+                      labelText: 'Produto',
+                    ),
                   ),
 
                   TextField(
                     controller: quantidade,
-
-                    decoration: const InputDecoration(labelText: 'Quantidade'),
+                    keyboardType: TextInputType.number,
+                    decoration: const InputDecoration(
+                      labelText: 'Quantidade',
+                    ),
                   ),
+
                   TextField(
                     controller: valor,
                     keyboardType: TextInputType.number,
@@ -68,20 +88,19 @@ class _TelaEditarState extends State<TelaEditar> {
               ),
             ),
           ),
-//input salvar
+
           ElevatedButton(
             child: const Text('Salvar'),
 
             onPressed: () {
-//navegação(volta editado)
               Navigator.pop(
                 context,
 
                 Item(
-                  nome.text,
-                  quantidade.text,
-                  double.parse(valor.text),
-
+                  id: widget.item.id,
+                  nome: nome.text,
+                  quantidade: int.tryParse(quantidade.text) ?? 0,
+                  valor: double.tryParse(valor.text) ?? 0,
                   comprado: widget.item.comprado,
                 ),
               );
