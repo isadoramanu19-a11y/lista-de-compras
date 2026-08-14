@@ -1,7 +1,8 @@
 import 'dart:async';
-import 'package:flutter/material.dart';
-import 'listacompras.dart';
 
+import 'package:flutter/material.dart';
+
+import 'listacompras.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -11,12 +12,13 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-
   @override
   void initState() {
     super.initState();
 
     Timer(const Duration(seconds: 2), () {
+      if (!mounted) return;
+
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
@@ -26,33 +28,33 @@ class _SplashScreenState extends State<SplashScreen> {
     });
   }
 
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: Container(
+          decoration: BoxDecoration(
+            color: Theme.of(context).cardColor,
+            borderRadius: BorderRadius.circular(20),
+          ),
 
-@override
-Widget build(BuildContext context) {
-  return Scaffold(
-    backgroundColor: const Color.fromARGB(255, 211, 164, 223),
-    body: Center(
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(20),
-        ),
-        padding: const EdgeInsets.all(20),
-        child: Text(
-          "Bem-vindo(a) à Lista de Compras",
-          textAlign: TextAlign.center,
-          style: const TextStyle(
-            fontSize: 35,
-            fontWeight: FontWeight.bold,
-            fontStyle: FontStyle.italic,
-            letterSpacing: 2,
-            color: Color.fromARGB(255, 211, 164, 223),
+          padding: const EdgeInsets.all(20),
+
+          child: Text(
+            "Bem-vindo(a) à Lista de Compras",
+
+            textAlign: TextAlign.center,
+
+            style: TextStyle(
+              fontSize: 35,
+              fontWeight: FontWeight.bold,
+              fontStyle: FontStyle.italic,
+              letterSpacing: 2,
+              color: Theme.of(context).colorScheme.primary,
+            ),
           ),
         ),
       ),
-    ),
-  );
+    );
+  }
 }
-
-}
-  

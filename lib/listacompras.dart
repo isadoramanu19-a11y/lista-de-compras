@@ -26,13 +26,15 @@ class _ListaComprasState extends State<ListaCompras> {
   void initState() {
     super.initState();
 
-    // Carrega os itens salvos no banco
     carregarItens();
   }
 
-  // READ - carregar itens do banco
+  // READ - carregar itens
   Future<void> carregarItens() async {
-    final itensSalvos = await DatabaseHelper.instance.buscarItens();
+    final itensSalvos =
+        await DatabaseHelper.instance.buscarItens();
+
+    if (!mounted) return;
 
     setState(() {
       itens = itensSalvos;
@@ -53,17 +55,15 @@ class _ListaComprasState extends State<ListaCompras> {
       valor: double.tryParse(valor.text) ?? 0,
     );
 
-    // Salva no banco
-    final id = await DatabaseHelper.instance.adicionarItem(novoItem);
+    final id =
+        await DatabaseHelper.instance.adicionarItem(novoItem);
 
-    // Coloca o ID gerado pelo banco no item
     novoItem.id = id;
 
     setState(() {
       itens.insert(0, novoItem);
     });
 
-    // Limpa os campos
     nome.clear();
     quantidade.clear();
     valor.clear();
@@ -83,7 +83,10 @@ class _ListaComprasState extends State<ListaCompras> {
   }
 
   // UPDATE - atualizar item
-  Future<void> atualizarItem(Item item, int index) async {
+  Future<void> atualizarItem(
+    Item item,
+    int index,
+  ) async {
     await DatabaseHelper.instance.atualizarItem(item);
 
     setState(() {
@@ -103,7 +106,7 @@ class _ListaComprasState extends State<ListaCompras> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 211, 164, 223),
+      // O tema global controla o fundo
 
       appBar: AppBar(
         title: const Text('Lista de Compras'),
@@ -112,7 +115,9 @@ class _ListaComprasState extends State<ListaCompras> {
 
       body: Column(
         children: [
-          // Card com os inputs
+          // =========================
+          // CARD DOS INPUTS
+          // =========================
           Card(
             margin: const EdgeInsets.all(10),
 
@@ -123,6 +128,7 @@ class _ListaComprasState extends State<ListaCompras> {
                 children: [
                   TextField(
                     controller: nome,
+
                     decoration: const InputDecoration(
                       labelText: 'Produto',
                     ),
@@ -130,7 +136,9 @@ class _ListaComprasState extends State<ListaCompras> {
 
                   TextField(
                     controller: quantidade,
+
                     keyboardType: TextInputType.number,
+
                     decoration: const InputDecoration(
                       labelText: 'Quantidade',
                     ),
@@ -138,7 +146,9 @@ class _ListaComprasState extends State<ListaCompras> {
 
                   TextField(
                     controller: valor,
+
                     keyboardType: TextInputType.number,
+
                     decoration: const InputDecoration(
                       labelText: 'Valor Unitário (R\$)',
                     ),
@@ -150,13 +160,19 @@ class _ListaComprasState extends State<ListaCompras> {
 
           const SizedBox(height: 10),
 
+          // =========================
+          // BOTÕES
+          // =========================
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisAlignment:
+                MainAxisAlignment.spaceEvenly,
 
             children: [
               ElevatedButton.icon(
                 onPressed: adicionar,
+
                 icon: const Icon(Icons.add),
+
                 label: const Text("Adicionar"),
               ),
 
@@ -165,11 +181,14 @@ class _ListaComprasState extends State<ListaCompras> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => Calculadora(itens: itens),
+                      builder: (context) =>
+                          Calculadora(itens: itens),
                     ),
                   );
                 },
+
                 icon: const Icon(Icons.calculate),
+
                 label: const Text("Calculadora"),
               ),
 
@@ -178,11 +197,14 @@ class _ListaComprasState extends State<ListaCompras> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const TelaConfiguracoes(),
+                      builder: (context) =>
+                          const TelaConfiguracoes(),
                     ),
                   );
                 },
+
                 icon: const Icon(Icons.settings),
+
                 label: const Text("Config."),
               ),
             ],
@@ -190,7 +212,9 @@ class _ListaComprasState extends State<ListaCompras> {
 
           const SizedBox(height: 10),
 
-          // Lista
+          // =========================
+          // LISTA
+          // =========================
           Expanded(
             child: ListView.builder(
               itemCount: itens.length,
@@ -205,18 +229,20 @@ class _ListaComprasState extends State<ListaCompras> {
                   ),
 
                   child: ListTile(
-                    // Checkbox
                     leading: Checkbox(
                       value: item.comprado,
 
                       onChanged: (value) async {
-                        item.comprado = value ?? false;
+                        item.comprado =
+                            value ?? false;
 
-                        await atualizarItem(item, index);
+                        await atualizarItem(
+                          item,
+                          index,
+                        );
                       },
                     ),
 
-                    // Nome e quantidade
                     title: Text(
                       '${item.nome} - ${item.quantidade}',
 
@@ -227,28 +253,32 @@ class _ListaComprasState extends State<ListaCompras> {
 
                         color: item.comprado
                             ? Colors.grey
-                            : Colors.black,
+                            : Theme.of(context)
+                                .colorScheme
+                                .onSurface,
                       ),
                     ),
 
-                    // Abrir tela de edição
                     onTap: () async {
-                      final editado = await Navigator.push(
+                      final editado =
+                          await Navigator.push(
                         context,
 
                         MaterialPageRoute(
-                          builder: (context) => TelaEditar(
-                            item: item,
-                          ),
+                          builder: (context) =>
+                              TelaEditar(item: item),
                         ),
                       );
 
-                      if (editado != null && editado is Item) {
-                        await atualizarItem(editado, index);
+                      if (editado != null &&
+                          editado is Item) {
+                        await atualizarItem(
+                          editado,
+                          index,
+                        );
                       }
                     },
 
-                    // Excluir
                     trailing: IconButton(
                       icon: const Icon(
                         Icons.delete,
